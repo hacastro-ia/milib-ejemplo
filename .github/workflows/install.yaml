@@ -22,9 +22,8 @@ jobs:
           NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
         run: |
-          pip install milib-ejemplo \
-            --index-url http://${NEXUS_USERNAME}:${NEXUS_PASSWORD}@ec2-13-222-184-158.compute-1.amazonaws.com:8081/repository/Mylibrarie/simple/ \
-            --trusted-host <ec2-dns>
+          ENC_PASS=$(python -c "import os, urllib.parse as u; print(u.quote(os.environ['NEXUS_PASSWORD'], safe=''))")
+          pip install milib-ejemplo --index-url "http://${NEXUS_USERNAME}:${ENC_PASS}@ec2-13-222-184-158.compute-1.amazonaws.com:8081/repository/Mylibrarie/simple/" --trusted-host ec2-13-222-184-158.compute-1.amazonaws.com
 
       - name: Probar la librería
         run: python -c "from mi_lib import saludar; print(saludar('Nexus'))"
